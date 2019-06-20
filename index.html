@@ -4,9 +4,76 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <link rel="stylesheet" href="stylesheet/style.css">
         <title>Scientific Calculator</title>
     </head>
     <body>
-        
+        <div id="container">
+            <div id="input__container">
+                <input type="text" id="expression" readonly>
+                <input type="text" id="answer" readonly>
+            </div>
+            <div id="additional__controls">
+                <table>
+                    <tr>
+                        <td><input class="adt__button" id="-1" type="button" value="1/x"></td>
+                        <td><input class="adt__button" id="!" type="button" value="x!"></td>
+                        <td><input class="adt__button" id="C" type="button" value="nCr"></td>
+                        <td><input class="adt__button" id="P" type="button" value="nPr"></td>
+                        <td><input class="adt__button" id="^" type="button" value="x^n"></td>
+                        <td><input class="adt__button" id="(-)" type="button" value="( - )"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="adt__button" id="radic" type="button" value="root"></td>
+                        <td><input class="adt__button" id="log" type="button" value="log"></td>
+                        <td><input class="adt__button" id="10^" type="button" value="10^x"></td>
+                        <td><input class="adt__button" id=ln type="button" value="ln"></td>
+                        <td><input class="adt__button" id="(" type="button" value="("></td>
+                        <td><input class="adt__button" id=")" type="button" value=")"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="adt__button" id="" type="button" value="sin"></td>
+                        <td><input class="adt__button" id="" type="button" value="sin^-1"></td>
+                        <td><input class="adt__button" id="" type="button" value="cos"></td>
+                        <td><input class="adt__button" id="" type="button" value="cos^-1"></td>
+                        <td><input class="adt__button" id="" type="button" value="tan"></td>
+                        <td><input class="adt__button" id="" type="button" value="tan^-1"></td>
+                    </tr>
+                </table> 
+                <hr>             
+            </div>
+            <div id="primary__controls">
+                <table>
+                    <tr>
+                        <td><input class="pri__button" id="7" type="button" value="7"></td>
+                        <td><input class="pri__button" id="8" type="button" value="8"></td>
+                        <td><input class="pri__button" id="9" type="button" value="9"></td>
+                        <td><input class="pri__button" id="Del" type="button" value="DEL"></td>
+                        <td><input class="pri__button" id="AC" type="button" value="AC"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="pri__button" id="4" type="button" value="4"></td>
+                        <td><input class="pri__button" id="5" type="button" value="5"></td>
+                        <td><input class="pri__button" id="6" type="button" value="6"></td>
+                        <td><input class="pri__button" id="X" type="button" value="X"></td>
+                        <td><input class="pri__button" id="/" type="button" value="/"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="pri__button" id="1" type="button" value="1"></td>
+                        <td><input class="pri__button" id="2" type="button" value="2"></td>
+                        <td><input class="pri__button" id="3" type="button" value="3"></td>
+                        <td><input class="pri__button" id="+" type="button" value="+"></td>
+                        <td><input class="pri__button" id="-" type="button" value="-"></td>
+                    </tr>
+                    <tr>
+                        <td><input class="pri__button" id="0" type="button" value="0"></td>
+                        <td><input class="pri__button" id="Dot" type="button" value="."></td>
+                        <td><input class="pri__button" id="E" type="button" value="Exp"></td>
+                        <td><input class="pri__button" id="Ans" type="button" value="Ans"></td>
+                        <td><input class="pri__button" id="Equal" type="button" value="="></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
     </body>
 </html>
