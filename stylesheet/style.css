@@ -28,7 +28,9 @@ hr {
 }
 
 #primary__controls .pri__button,
-#additional__controls .adt__button  {
+#additional__controls .adt__button,
+#primary__controls .active,
+#additional__controls .active {
     all: unset;
     border: medium solid black;
     margin: 5px 1px;
@@ -51,10 +53,40 @@ hr {
     background: red;
 }
 
+#primary__controls .pri__button:active,
+#primary__controls .active {
+    width: 80px;
+    height: 40px;
+    margin: 5px 1px;
+    font-size: 24px;
+    background: #c5c5c5;
+}
+
+#primary__controls .pri__button#Del:active,
+#primary__controls .pri__button#AC:active,
+#primary__controls .avtive#Del,
+#primary__controls .avtive#AC {
+    width: 80px;
+    height: 40px;
+    margin: 5px 1px;
+    font-size: 24px;
+    background: #ff5f5f;
+}
+
 #additional__controls .adt__button {
     width: 64.5px;
     height: 30px;
     margin: 5px 1px;
     font-size: 18px;
     background: black;
+}
+
+#additional__controls .adt__button:active,
+#additional__controls .active {
+    width: 64.5px;
+    height: 30px;
+    margin: 5px 1px;
+    font-size: 18px;
+    background: grey;
+    border-color: grey;
 }
