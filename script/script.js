@@ -127,21 +127,20 @@ function keyupHandler(event) {
 }
 
 function ansKeyHandler(event) {
-    console.log(lastAnswer);
     if(lastAnswer != '') {
-        if(noNumber) {
+        if(isNumber(inputContainerText[inputContainerText.length-1])) {
             inputContainerText = '';
+            operator = '';
         }
         addKeyToInputContainer(lastAnswer);
         noNumber = true;
-        console.log('add ans');
     }
 }
 
 function expKeyHandler(event) {
     tempNum = expression.value;
     tempNumLength = tempNum.length;
-    if(!Number.isNaN(tempNum)) {
+    if(isNumber(tempNum)) {
         if(operator == '') {
             operator = 'E';
             addKeyToInputContainer('E');
@@ -165,7 +164,15 @@ function deleteLastOne() {
 }
 
 function numKeyHandler(event) {
+    if(noNumber) {
+        inputContainerText = '';
+        operator = '';
+    }
     addKeyToInputContainer(event.target.id);
+}
+
+function isNumber(value) {
+    return Number.isInteger(Number(value));
 }
 
 window.addEventListener('keydown', keydownHandler);
@@ -185,6 +192,9 @@ AddKey.addEventListener('click', (event) => {
 });
 SubtractKey.addEventListener('click', (event) => {
     addKeyToInputContainer('-');
+});
+dotKey.addEventListener('click', (event) => {
+    addKeyToInputContainer('.');
 });
 
 ansKey.addEventListener('click', ansKeyHandler);
