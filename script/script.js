@@ -19,6 +19,24 @@ const delKey = document.getElementById('Del');
 const acKey = document.getElementById('AC');
 
 //additional
+const reverseKey = document.getElementById('rev');
+const factorialKey = document.getElementById('fac');
+const combKey = document.getElementById('comb');
+const permKey = document.getElementById('perm');
+const powKey = document.getElementById('pow');
+const squareKey = document.getElementById('square');
+const radicKey = document.getElementById('radic');
+const logKey = document.getElementById('log');
+const lnKey = document.getElementById('ln');
+const tenPowKey = document.getElementById('ten-power');
+const leftBraceKey = document.getElementById('leftbrace');
+const rightBraceKey = document.getElementById('rightbrace');
+const sinKey = document.getElementById('sin');
+const sinRevKey = document.getElementById('sin^-1');
+const cosKey = document.getElementById('cos');
+const cosRevKey = document.getElementById('cos^-1');
+const tanKey = document.getElementById('tan');
+const tanRevKey = document.getElementById('tan^-1');
 
 // variables
 let lastAnswer = '';
@@ -27,6 +45,29 @@ let noNumber = false;
 let tempNum;
 let tempNumLength;
 let operator = '';
+
+// util function
+function isNumber(value) {
+    return value != '' && !Number.isNaN(Number(value));
+}
+
+function factorial(n) {
+    let ans = 1;
+    for(let i=1; i<=n; i++) {
+        ans *= i;
+    }
+    return ans;
+}
+
+function resetAllCalculation() {
+    expression.value = '';
+    answer.value = '';
+    inputContainerText = '';
+    noNumber = false;
+    tempNum = '';
+    tempNumLength = 0;
+    operator = '';
+}
 
 // event handler
 function addKeyToInputContainer(keyText) {
@@ -44,18 +85,157 @@ function calculateExpression() {
             const value = expression.value.slice(tempNumLength+1,expression.value.length);
             answer.value = tempNum*Math.pow(10, value);
         }
-    
-        expression.value = answer.value;
-        inputContainerText = answer.value;
-        lastAnswer = answer.value;
-        noNumber = true;
+        else if(operator == '-1') {
+            if(!isNumber(tempNum)) {
+                throw 'Error'
+            }
+            answer.value = 1/tempNum;
+        }
+        else if(operator == '!') {
+            if(!isNumber(tempNum)) {
+                throw 'Error'
+            }
+            answer.value = factorial(tempNum);
+        }
+        else if(operator == '^') {
+            const value = expression.value.slice(tempNumLength+1,expression.value.length);
+            if(!isNumber(tempNum) || !isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.pow(tempNum,value);
+        }
+        else if(operator == '^2') {
+            if(!isNumber(tempNum)) {
+                throw 'Error'
+            }
+            answer.value = Math.pow(tempNum,2);
+        }     
+        else if(operator == 'sqrt') {
+            let value = expression.value.slice(tempNumLength+1,expression.value.length);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.sqrt(value);
+        }
+        else if(operator == 'perm') {
+            let value = expression.value.slice(tempNumLength+1,expression.value.length);
+            if(!isNumber(tempNum) || !isNumber(value)) {
+                throw 'Error'
+            }
+            if(tempNum > value) {
+                if(value > tempNum - value) {
+                    value = tempNum - value;
+                }
+                answer.value = factorial(tempNum)/factorial(value);
+            }
+            else if(tempNum == value) {
+                answer.value = 1;
+            }
+            else {
+                resetAllCalculation();
+                answer.value = 'Syntax ERROR';               
+            }
+        }
+        else if(operator == 'comb') {
+            let value = expression.value.slice(tempNumLength+1,expression.value.length);
+            if(!isNumber(tempNum) || !isNumber(value)) {
+                throw 'Error'
+            }
+            let value2 = value;
+            if(tempNum > value2) {
+                if(value2 > tempNum - value) {
+                    value2 = tempNum - value2;
+                }
+                answer.value = (factorial(tempNum)/factorial(value2))/factorial(value);
+            }
+            else if(tempNum == value) {
+                answer.value = 1;
+            }
+            else {
+                resetAllCalculation();
+                answer.value = 'Syntax ERROR';               
+            }
+        }
+        else if(operator == 'log') {
+            const value = expression.value.slice(3,expression.value.length);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.log(value)/Math.log(10);
+        }
+        else if(operator == 'ln') {
+            const value = expression.value.slice(2,expression.value.length);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.log(value);   
+        }
+        else if(operator == '10^') {
+            const value = expression.value.slice(3,expression.value.length);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.pow(10, value);
+        }
+        else if(operator == 'sin') {
+            const value = expression.value.slice(3,expression.value.length)*(Math.PI / 180);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.sin(value).toFixed(15);
+        }
+        else if(operator == 'sin^-1') {
+            const value = expression.value.slice(6,expression.value.length)*(Math.PI / 180);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = 1/Math.sin(value).toFixed(15);
+        }
+        else if(operator == 'cos') {
+            const value = expression.value.slice(3,expression.value.length)*(Math.PI / 180);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.cos(value).toFixed(15);
+        }
+        else if(operator == 'cos^-1') {
+            const value = expression.value.slice(6,expression.value.length)*(Math.PI / 180);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = 1/Math.cos(value).toFixed(15);
+        }
+        else if(operator == 'tan') {
+            const value = expression.value.slice(3,expression.value.length)*(Math.PI / 180);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = Math.tan(value).toFixed(15);
+        }
+        else if(operator == 'tan^-1') {
+            const value = expression.value.slice(6,expression.value.length)*(Math.PI / 180);
+            if(!isNumber(value)) {
+                throw 'Error'
+            }
+            answer.value = 1/Math.tan(value).toFixed(15);
+        }
+
+        if(answer.value && isNumber(answer.value)) {
+            expression.value = answer.value;
+            inputContainerText = answer.value;
+            lastAnswer = answer.value;
+            noNumber = true;
+        }
+        else {
+            resetAllCalculation();
+            answer.value = 'Syntax ERROR';
+        }
         answer.focus();
     }
     catch(err) {
         resetAllCalculation();
         answer.value = 'Syntax ERROR';
     }
-
 }
 
 function keydownHandler(event) {
@@ -100,6 +280,14 @@ function keydownHandler(event) {
         delKey.className = 'active';
         deleteLastOne();
     }
+    else if(event.key == '(') {
+        leftBraceKey.className = 'active';
+        addKeyToInputContainer('(');       
+    }
+    else if(event.key == ')') {
+        rightBraceKey.className = 'active';
+        addKeyToInputContainer(')');       
+    }
 }
 
 function keyupHandler(event) {
@@ -131,6 +319,12 @@ function keyupHandler(event) {
     else if(event.key =='Backspace') { // backspace, del
         delKey.className = 'pri__button';
     }
+    else if(event.key =='(') {
+        leftBraceKey.className = 'adt__button';
+    }
+    else if(event.key ==')') {
+        rightBraceKey.className = 'adt__button';
+    }
 }
 
 function ansKeyHandler(event) {
@@ -155,16 +349,6 @@ function expKeyHandler(event) {
     }
 }
 
-function resetAllCalculation() {
-    expression.value = '';
-    answer.value = '';
-    inputContainerText = '';
-    noNumber = false;
-    tempNum = '';
-    tempNumLength = 0;
-    operator = '';
-}
-
 function deleteLastOne() {
     inputContainerText = inputContainerText.slice(0,-1);
     expression.value = inputContainerText;
@@ -176,10 +360,6 @@ function numKeyHandler(event) {
         operator = '';
     }
     addKeyToInputContainer(event.target.id);
-}
-
-function isNumber(value) {
-    return Number.isInteger(Number(value));
 }
 
 window.addEventListener('keydown', keydownHandler);
@@ -209,3 +389,123 @@ expKey.addEventListener('click', expKeyHandler);
 equalKey.addEventListener('click', calculateExpression);
 acKey.addEventListener('click', resetAllCalculation);
 delKey.addEventListener('click', deleteLastOne);
+
+reverseKey.addEventListener('click', (event) => {
+    operator = '-1';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('-1');
+});
+
+factorialKey.addEventListener('click', (event) => {
+    operator = '!';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('!');
+});
+
+combKey.addEventListener('click', (event) => {
+    operator = 'comb';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('C');
+});
+
+permKey.addEventListener('click', (event) => {
+    operator = 'perm';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('P');
+});
+
+powKey.addEventListener('click', (event) => {
+    operator = '^';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('^');
+});
+
+squareKey.addEventListener('click', (event) => {
+    operator = '^2';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('^2');
+});
+
+radicKey.addEventListener('click', (event) => {
+    operator = 'sqrt';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('√');
+});
+
+logKey.addEventListener('click', (event) => {
+    operator = 'log';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('log');
+});
+
+lnKey.addEventListener('click', (event) => {
+    operator = 'ln';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('ln');
+});
+
+tenPowKey.addEventListener('click', (event) => {
+    operator = '10^';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('10^');
+});
+
+sinKey.addEventListener('click', (event) => {
+    operator = 'sin';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('sin');
+});
+
+sinRevKey.addEventListener('click', (event) => {
+    operator = 'sin^-1';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('sin^-1');
+});
+
+cosKey.addEventListener('click', (event) => {
+    operator = 'cos';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('cos');
+});
+
+cosRevKey.addEventListener('click', (event) => {
+    operator = 'cos^-1';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('cos^-1');
+});
+
+tanKey.addEventListener('click', (event) => {
+    operator = 'tan';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('tan');
+});
+
+tanRevKey.addEventListener('click', (event) => {
+    operator = 'tan^-1';
+    tempNum = expression.value;
+    tempNumLength = tempNum.length;
+    addKeyToInputContainer('tan^-1');
+});
+
+leftBraceKey.addEventListener('click', (event) => {
+    addKeyToInputContainer('(');
+});
+
+rightBraceKey.addEventListener('click', (event) => {
+    addKeyToInputContainer(')');
+});
