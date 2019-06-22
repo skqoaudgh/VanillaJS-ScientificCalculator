@@ -57,6 +57,7 @@ function keydownHandler(event) {
         numKey[inputKey].className = 'active';
         if(noNumber) {
             inputContainerText = '';
+            operator = '';
         }
         addKeyToInputContainer(event.key);
     }
@@ -126,12 +127,14 @@ function keyupHandler(event) {
 }
 
 function ansKeyHandler(event) {
+    console.log(lastAnswer);
     if(lastAnswer != '') {
         if(noNumber) {
             inputContainerText = '';
         }
         addKeyToInputContainer(lastAnswer);
         noNumber = true;
+        console.log('add ans');
     }
 }
 
@@ -149,7 +152,6 @@ function expKeyHandler(event) {
 function resetAllCalculation() {
     expression.value = '';
     answer.value = '';
-    lastAnswer = '';
     inputContainerText = '';
     noNumber = false;
     tempNum = '';
@@ -162,8 +164,29 @@ function deleteLastOne() {
     expression.value = inputContainerText;
 }
 
+function numKeyHandler(event) {
+    addKeyToInputContainer(event.target.id);
+}
+
 window.addEventListener('keydown', keydownHandler);
 window.addEventListener('keyup', keyupHandler);
+
+for(let i=0; i<10; i++) {
+    numKey[i].addEventListener('click', numKeyHandler);
+}
+multKey.addEventListener('click', (event) => {
+    addKeyToInputContainer('*');
+});
+divideKey.addEventListener('click', (event) => {
+    addKeyToInputContainer('/');
+});
+AddKey.addEventListener('click', (event) => {
+    addKeyToInputContainer('+');
+});
+SubtractKey.addEventListener('click', (event) => {
+    addKeyToInputContainer('-');
+});
+
 ansKey.addEventListener('click', ansKeyHandler);
 expKey.addEventListener('click', expKeyHandler);
 equalKey.addEventListener('click', calculateExpression);
