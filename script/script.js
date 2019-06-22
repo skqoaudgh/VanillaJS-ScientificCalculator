@@ -36,19 +36,26 @@ function addKeyToInputContainer(keyText) {
 }
 
 function calculateExpression() {
-    if(operator == '') {
-        answer.value = eval(expression.value);
+    try {
+        if(operator == '') {
+            answer.value = eval(expression.value);
+        }
+        else if(operator == 'E') {
+            const value = expression.value.slice(tempNumLength+1,expression.value.length);
+            answer.value = tempNum*Math.pow(10, value);
+        }
+    
+        expression.value = answer.value;
+        inputContainerText = answer.value;
+        lastAnswer = answer.value;
+        noNumber = true;
+        answer.focus();
     }
-    else if(operator == 'E') {
-        const value = expression.value.slice(tempNumLength+1,expression.value.length);
-        answer.value = tempNum*Math.pow(10, value);
+    catch(err) {
+        resetAllCalculation();
+        answer.value = 'Syntax ERROR';
     }
 
-    expression.value = answer.value;
-    inputContainerText = answer.value;
-    lastAnswer = answer.value;
-    noNumber = true;
-    answer.focus();
 }
 
 function keydownHandler(event) {
