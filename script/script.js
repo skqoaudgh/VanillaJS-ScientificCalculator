@@ -48,15 +48,11 @@ let operator = '';
 
 // util function
 function isNumber(value) {
-    return value != '' && !Number.isNaN(Number(value));
+    return value != '' && !Number.isNaN(Number(value)) || value == '.';
 }
 
-function factorial(n) {
-    let ans = 1;
-    for(let i=1; i<=n; i++) {
-        ans *= i;
-    }
-    return ans;
+function isArithmeticOperator(value) {
+    return value == '+' || value == '-' || value == '/' || value == '*';
 }
 
 function resetAllCalculation() {
@@ -69,218 +65,213 @@ function resetAllCalculation() {
     operator = '';
 }
 
-// event handler
-function addKeyToInputContainer(keyText) {
-    inputContainerText += keyText;
-    expression.value = inputContainerText;
-    noNumber = false;
+// calculate function
+function reverse(n) {
+    return (1/n);
+}
+
+function f(n) {
+    let ans = 1;
+    for(let i=1; i<=n; i++) {
+        ans *= i;
+    }
+    return ans;
+}
+
+function P(n, r) {
+    return f(n)/f(n-r);
+}
+
+function C(n, r) {
+    return P(n,r)/f(r);
+}
+
+function nPower(x, n) {
+    if(isNumber(n)) {
+        return Math.pow(x,n);
+    }
+    console.log(x,n);
+}
+
+function squarePower(x) {
+    return Math.pow(x,2);
+}
+
+function decimalPower(x) {
+    return Math.pow(10, x);
+}
+
+function rt(n) {
+    return Math.sqrt(n);
+}
+
+function log(n) {
+    return Math.log(n)/Math.log(10);
+}
+
+function ln(n) {
+    return Math.log(n);
+}
+
+function sin(n) {
+    return Math.sin(n*Math.PI/180).toFixed(15);
+}
+
+function sinRev(n) {
+    return 1/(Math.sin(n*Math.PI/180).toFixed(15));
+}
+
+function cos(n) {
+    return Math.cos(n*Math.PI/180).toFixed(15);
+}
+
+function cosRev(n) {
+    return 1/(Math.cos(n*Math.PI/180).toFixed(15));
+}
+
+function tan(n) {
+    return Math.tan(n*Math.PI/180).toFixed(15);
+}
+
+function tanRev(n) {
+    return 1/(Math.tan(n*Math.PI/180).toFixed(15));
+}
+
+function E(n) {
+    return Math.pow(10,n);
+}
+
+function ans() {
+    return parseInt(lastAnswer);
 }
 
 function calculateExpression(exp) {
-    let oper = '';
-    let l='', r='';
-    for(let i=0; i<exp.length; i++) {
-        if((exp[i] < '0' || exp[i] > '9') && exp[i] != '+' && exp[i] != '-' && exp[i] != '/' && exp[i] != '*') { // 연산자 나옴
-            if(oper == '') {
-                oper += exp[i];
+    console.log('input: ', exp.join(''));
+    let i, isOperator = 0;
+    for(i=0; i<exp.length; i++) {
+        if(!isNumber(exp[i]) && exp[i] != '-' && exp[i] != '+') {
+            if(exp[i] == '^') {
+                exp[i] = '*';
+                exp.splice(i+1, 0, '*');
             }
-            else {
-                if(oper == 'E') {
-                    let left = parseInt(l), right = parseInt(r);
-                    let ans = left*Math.pow(10, right);
-    
-                    exp = exp.replace(l+'E'+r,ans);
-                    l = '';
-                    r = '';
-                }
+            if(exp[i] == '√') {
+                exp[i] = 'r';
+                exp.splice(i+1, 0, 't');
+            }
+            if(exp[i] == 'a' && exp[i+1] == 'n' && exp[i+2] == 's') {
+                exp.splice(i+3, 0, '()');
+            }
+            // add parent
+            else if(exp[i] != '(') {
+                if(isNumber(exp[i+1]) || exp[i+1] == '-') {
+                    //console.log('add (', i+1);
+                    exp.splice(i+1, 0, '(');
+                    //console.log('test', exp.join(''), i);
+                    isOperator ++;
+                    i++;
+                    continue;
+                }                
+            }
+            if(isOperator > 0) {
+                //console.log('add )', i);
+                exp.splice(i, 0, ')');
+                isOperator --;
+                i++;               
             }
         }
-        else { // 숫자, 사칙연산
-            if(exp[i] >= '0' && exp[i] <= '9') {
-                if(oper == '') {
-                    l += exp[i];
-                }
-                else {
-                    r += exp[i];
-                }
-            }
-            else {
-                l = '';
-                r = '';
-            }
 
-            if(oper == 'E') {
-                let left = parseInt(l), right = parseInt(r);
-                let ans = left*Math.pow(10, right);
-
-                exp = exp.replace(l+'E'+r,ans);
-                l = '';
-                r = '';
+        // add multi operator
+        if(isNumber(exp[i-3])) {
+            if(exp[i-2] == '√' || exp[i-2] == 's' || exp[i-2] == 'c' || exp[i-2] == 't' || exp[i-2] == 'l' || exp[i-2] == 'E') {
+                exp.splice(i-2, 0, '*');
+                i++;
+            }
+        }
+        if(exp[i-1] == '(') {
+            if(exp[i-2] == '!') {
+                exp.splice(i-1, 0, '*');
+                i++;                  
+            }
+        }
+        else if(exp[i-1] == ')') {
+            if(exp[i-2] == '!') {
+                exp.splice(i, 0, '*');
+                i++;                  
             }
         }
     }
+    if(isOperator > 0) {
+        for(let j=0; j<isOperator; j++) {
+            exp[i++] = ')';
+        }
+    }
+
+    exp = exp.join('');
+    exp = exp.split('!').join('f()');
+    exp = exp.split('C(').join('C(,');
+    exp = exp.split('P(').join('P(,');
+
+    let movedValue = []; // 0:옮길 idx, 1:인자 첫번쨰 idx, 2:인자 두번쨰 idx
+    for(let p=0; p<exp.length; p++) {
+        if(exp[p] == 'f' || exp[p] == 'C' || exp[p] == 'P') {
+            movedValue[0] = p+1;
+            movedValue[2] = p-1;
+            let isParent = false, parentCount = 0, over = false;
+            if(exp[p-1] == ')') {
+                isParent = true;
+                parentCount = 0;
+            }
+            for(let q=p-1; q>=0; q--) {
+                if(!isParent) {
+                    if(isNumber(exp[q])) {
+                        movedValue[1] = q;
+                    }
+                    else {
+                        break;
+                    }
+                }
+                if(isParent) {
+                    if(over) {
+                        break;
+                    }
+                    if(exp[q] == ')') {
+                        parentCount ++;
+                    }
+                    else if(exp[q] == '(') {
+                        parentCount --;
+                        movedValue[1] = q;
+                        if(parentCount == 0) {
+                            over = true;
+                        }
+                    }
+                    else {
+                        movedValue[1] = q;
+                    }
+                }
+            }
+            /*
+            console.log(exp);
+            console.log(movedValue[0], movedValue[1], movedValue[2]);
+            console.log('a',exp.substring(0, movedValue[1]));
+            console.log('b',exp.substring(movedValue[1], movedValue[2]+1));
+            console.log('c',exp.substring(movedValue[2]+1, movedValue[0]+1));
+            console.log('d',exp.substring(movedValue[0]+1, exp.length));
+            */
+            exp =
+                exp.substring(0, movedValue[1])
+                +exp.substring(movedValue[2]+1, movedValue[0]+1)
+                +exp.substring(movedValue[1], movedValue[2]+1)
+                +exp.substring(movedValue[0]+1, exp.length)
+            ;
+        }
+    }
+
+    console.log('exp:', exp);
     try {
-        console.log('exp:', exp);
-        answer.value = eval(exp);
-        expression.value = answer.value;
-        inputContainerText = answer.value;
-        lastAnswer = answer.value;
-        noNumber = true;
-    }
-    catch(err) {
-        resetAllCalculation();
-        answer.value = 'Syntax ERROR';
-    }
-    answer.focus();
-}
-
-
-/*
-    try {
-        if(operator == '') {
-            answer.value = eval(expression);
-        }
-        else if(operator == 'E') {
-            const value = expression.slice(tempNumLength+1,expression.length);
-            answer.value = tempNum*Math.pow(10, value);
-        }
-        else if(operator == '-1') {
-            if(!isNumber(tempNum)) {
-                throw 'Error'
-            }
-            answer.value = 1/tempNum;
-        }
-        else if(operator == '!') {
-            if(!isNumber(tempNum)) {
-                throw 'Error'
-            }
-            answer.value = factorial(tempNum);
-        }
-        else if(operator == '^') {
-            const value = expression.slice(tempNumLength+1,expression.length);
-            if(!isNumber(tempNum) || !isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.pow(tempNum,value);
-        }
-        else if(operator == '^2') {
-            if(!isNumber(tempNum)) {
-                throw 'Error'
-            }
-            answer.value = Math.pow(tempNum,2);
-        }     
-        else if(operator == 'sqrt') {
-            let value = expression.slice(tempNumLength+1,expression.length);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.sqrt(value);
-        }
-        else if(operator == 'perm') {
-            let value = expression.slice(tempNumLength+1,expression.length);
-            if(!isNumber(tempNum) || !isNumber(value)) {
-                throw 'Error'
-            }
-            if(tempNum > value) {
-                if(value > tempNum - value) {
-                    value = tempNum - value;
-                }
-                answer.value = factorial(tempNum)/factorial(value);
-            }
-            else if(tempNum == value) {
-                answer.value = 1;
-            }
-            else {
-                resetAllCalculation();
-                answer.value = 'Syntax ERROR';               
-            }
-        }
-        else if(operator == 'comb') {
-            let value = expression.slice(tempNumLength+1,expression.length);
-            if(!isNumber(tempNum) || !isNumber(value)) {
-                throw 'Error'
-            }
-            let value2 = value;
-            if(tempNum > value2) {
-                if(value2 > tempNum - value) {
-                    value2 = tempNum - value2;
-                }
-                answer.value = (factorial(tempNum)/factorial(value2))/factorial(value);
-            }
-            else if(tempNum == value) {
-                answer.value = 1;
-            }
-            else {
-                resetAllCalculation();
-                answer.value = 'Syntax ERROR';               
-            }
-        }
-        else if(operator == 'log') {
-            const value = expression.slice(3,expression.length);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.log(value)/Math.log(10);
-        }
-        else if(operator == 'ln') {
-            const value = expression.slice(2,expression.length);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.log(value);   
-        }
-        else if(operator == '10^') {
-            const value = expression.slice(3,expression.length);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.pow(10, value);
-        }
-        else if(operator == 'sin') {
-            const value = expression.slice(3,expression.length)*(Math.PI / 180);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.sin(value).toFixed(15);
-        }
-        else if(operator == 'sin^-1') {
-            const value = expression.slice(6,expression.length)*(Math.PI / 180);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = 1/Math.sin(value).toFixed(15);
-        }
-        else if(operator == 'cos') {
-            const value = expression.slice(3,expression.length)*(Math.PI / 180);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.cos(value).toFixed(15);
-        }
-        else if(operator == 'cos^-1') {
-            const value = expression.slice(6,expression.length)*(Math.PI / 180);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = 1/Math.cos(value).toFixed(15);
-        }
-        else if(operator == 'tan') {
-            const value = expression.slice(3,expression.length)*(Math.PI / 180);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = Math.tan(value).toFixed(15);
-        }
-        else if(operator == 'tan^-1') {
-            const value = expression.slice(6,expression.length)*(Math.PI / 180);
-            if(!isNumber(value)) {
-                throw 'Error'
-            }
-            answer.value = 1/Math.tan(value).toFixed(15);
-        }
-
+        answer.value = eval(exp.toString());
+        console.log('ans:', answer.value);
         if(answer.value && isNumber(answer.value)) {
-            expression = answer.value;
+            expression.value = answer.value;
             inputContainerText = answer.value;
             lastAnswer = answer.value;
             noNumber = true;
@@ -289,14 +280,20 @@ function calculateExpression(exp) {
             resetAllCalculation();
             answer.value = 'Syntax ERROR';
         }
-        answer.focus();
     }
     catch(err) {
         resetAllCalculation();
         answer.value = 'Syntax ERROR';
     }
+    answer.focus();
 }
-*/
+
+// event handler
+function addKeyToInputContainer(keyText) {
+    inputContainerText += keyText;
+    expression.value = inputContainerText;
+    noNumber = false;
+}
 
 function keydownHandler(event) {
     const inputKey = parseInt(event.key);
@@ -330,7 +327,7 @@ function keydownHandler(event) {
     }   
     else if(event.key == 'Enter') {// enter
         equalKey.className = 'active';
-        calculateExpression(expression.value);
+        calculateExpression(expression.value.split(""));
     }
     else if(event.key == 'Escape') {// esc, ac
         acKey.className = 'active';
@@ -393,7 +390,7 @@ function ansKeyHandler(event) {
             inputContainerText = '';
             operator = '';
         }
-        addKeyToInputContainer(lastAnswer);
+        addKeyToInputContainer('ans');
         noNumber = true;
     }
 }
@@ -438,7 +435,7 @@ expKey.addEventListener('click', (event) => {
     addKeyToInputContainer('E');
 });
 equalKey.addEventListener('click', (event) => {
-    calculateExpression(expression.value);
+    calculateExpression(expression.value.split(""));
 });
 acKey.addEventListener('click', resetAllCalculation);
 delKey.addEventListener('click', deleteLastOne);
@@ -447,7 +444,7 @@ reverseKey.addEventListener('click', (event) => {
     operator = '-1';
     tempNum = expression;
     tempNumLength = tempNum.length;
-    addKeyToInputContainer('-1');
+    addKeyToInputContainer('^-1');
 });
 
 factorialKey.addEventListener('click', (event) => {
@@ -524,7 +521,7 @@ sinRevKey.addEventListener('click', (event) => {
     operator = 'sin^-1';
     tempNum = expression;
     tempNumLength = tempNum.length;
-    addKeyToInputContainer('sin^-1');
+    addKeyToInputContainer('sinRev');
 });
 
 cosKey.addEventListener('click', (event) => {
@@ -538,7 +535,7 @@ cosRevKey.addEventListener('click', (event) => {
     operator = 'cos^-1';
     tempNum = expression;
     tempNumLength = tempNum.length;
-    addKeyToInputContainer('cos^-1');
+    addKeyToInputContainer('cosRev');
 });
 
 tanKey.addEventListener('click', (event) => {
@@ -552,7 +549,7 @@ tanRevKey.addEventListener('click', (event) => {
     operator = 'tan^-1';
     tempNum = expression;
     tempNumLength = tempNum.length;
-    addKeyToInputContainer('tan^-1');
+    addKeyToInputContainer('tanRev');
 });
 
 leftBraceKey.addEventListener('click', (event) => {
