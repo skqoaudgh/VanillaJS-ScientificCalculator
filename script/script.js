@@ -147,7 +147,7 @@ function ans() {
 
 function calculateExpression(exp) {
     console.log('input: ', exp.join(''));
-    let i, isOperator = 0;
+    let i, isOperator = 0, next=false;
     for(i=0; i<exp.length; i++) {
         if(!isNumber(exp[i]) && exp[i] != '-' && exp[i] != '+') {
             if(exp[i] == '^') {
@@ -169,21 +169,22 @@ function calculateExpression(exp) {
                     //console.log('test', exp.join(''), i);
                     isOperator ++;
                     i++;
-                    continue;
+                    next = true;
                 }                
             }
-            if(isOperator > 0) {
+            if(isOperator > 0 && !next) {
                 //console.log('add )', i);
                 exp.splice(i, 0, ')');
                 isOperator --;
                 i++;               
             }
+            next = false;
         }
 
         // add multi operator
-        if(isNumber(exp[i-3])) {
-            if(exp[i-2] == '√' || exp[i-2] == 's' || exp[i-2] == 'c' || exp[i-2] == 't' || exp[i-2] == 'l' || exp[i-2] == 'E') {
-                exp.splice(i-2, 0, '*');
+        if(isNumber(exp[i-2]) || exp[i-2] == ')') {
+            if(exp[i-1] == '√' || exp[i-1] == 's' || exp[i-1] == 'c' || exp[i-1] == 't' || exp[i-1] == 'l' || exp[i-1] == 'E') {
+                exp.splice(i-1, 0, '*');
                 i++;
             }
         }
